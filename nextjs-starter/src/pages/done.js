@@ -1,5 +1,8 @@
 // import '../styles/globals.css'
+
 import DoneTaskList from "../../comps/DoneTaskList"
+import { SignIn, SignedOut, SignedIn} from '@clerk/nextjs'
+import Link from 'next/link'
 
 
 
@@ -10,7 +13,12 @@ export default function Done( ){
     return(
         <div>
         <h1>Done Tasks</h1>
+        <SignedOut>
+        <Link href={`/`}>You are signed out, click here to go to home page to sign back in </Link>
+        </SignedOut>
+        <SignedIn>
         <DoneTaskList></DoneTaskList>
+        </SignedIn>
         </div>
     )
 }

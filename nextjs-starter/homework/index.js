@@ -6,12 +6,29 @@
 import {app,  Datastore} from 'codehooks-js'
 import { date, object, string, number} from 'yup';
 import {crudlify} from 'codehooks-crudlify'
+import jwtDecode from 'jwt-decode';
 
 const taskYup = object({
   taskName: string().required(),
   status: string(),
   createdOn: date().default(() => new Date()),
 });
+
+const userAuth = async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+    if (authorization) {
+      const token = authorization.replace('Bearer ','');
+      // NOTE this doesn't validate, but we don't need it to. codehooks is doing that for us.
+      const token_parsed = jwtDecode(token);
+      req.user_token = token_parsed;
+    }
+    next();
+  } catch (error) {
+    next(error);
+  } 
+}
+app.use(userAuth)
 
 // test route for https://<PROJECTID>.api.codehooks.io/dev/
 app.get('/', (req, res) => {

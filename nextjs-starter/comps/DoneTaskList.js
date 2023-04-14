@@ -1,34 +1,37 @@
 import { useEffect, useState } from "react";
-import { addTask, updateTask } from "../modules/Data";
-import Link from 'next/link'
+import { addTask, updateTask, getTasks} from "../modules/Data";
+
+import { useAuth } from "@clerk/nextjs";
 const API_ENDPOINT = "https://homework-03l3.api.codehooks.io/dev";
 const API_KEY = "1693bf2f-2339-4fee-b133-21536bccfe42";
+import { SignIn, SignedOut, SignedIn} from '@clerk/nextjs'
+import Link from 'next/link'
 
 export default function TaskList( ) {
     const [data, setData] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [newName, setNewName] = useState("");
     const [loading, setLoading] = useState(true);
+    const { isLoaded, userId, sessionId, getToken } = useAuth();
 
     useEffect(() => {
-        const fetchData = async () => {
-          const response = await fetch(API_ENDPOINT + '/task', {
-            'method':'GET',
-            'headers': {'x-apikey': API_KEY}
-          })
-          const data = await response.json()
-          const DoneTasks = []
-          // update state -- configured earlier.
-          for (let i = 0; i < data.length; i++) {
+        async function process() {
+            if(userId){
+            const token = await getToken({ template: "codehooks" });
+            const data = await getTasks(token);
+            const Done = [];
+            for (let i = 0; i < data.length; i++) {
             if (data[i].status == "Done") {
-              DoneTasks.push(data[i])
+               Done.push(data[i])
+              }
             }
-          }
-          setData(DoneTasks);
-          setLoading(false);
+            setData(Done);
+            setLoading(false);
+          
         }
-        fetchData();
-      }, [])
+    }
+        process();
+      }, [isLoaded]);
       
 
       if (loading) {
@@ -38,16 +41,13 @@ export default function TaskList( ) {
           <li key={task.taskName}>
             <div className="task">
             <Link href={`/todo/_id=` + task._id}>
-            {task.taskName} 
+            <b>{task.taskName} </b>
             </Link> <br>
             </br>
             {task.status}<br>
             </br>
-            {task._id} <br>
-            </br>
-            {/* <input type="checkbox" id="status" name="status" value={task.status} onClick = {() => status(task._id)}/>
-            {task.status} */}
-          
+            {task.createdOn}
+            
             </div>
           </li>
         ));
@@ -57,6 +57,7 @@ export default function TaskList( ) {
     return (
   
         <>
+        <h1>Done Todo List Items</h1>
         <ol>
           {groupListItems}
         </ol>

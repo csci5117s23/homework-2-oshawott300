@@ -7,14 +7,21 @@ Please fill out all of the following sections to help us grade your submission:
 
 ## Student (to be completed individually)
 
-* First Last, x500@umn.edu
+* John Lei, lei00007
 
 ## Link to Site
 
-<https://TODO.com/>
+https://silver-khapse-bd98ca.netlify.app/
 
 ## Challenge Task
 
-* I started the challenge task: [yes/no]
-* I completed the challenge task: [yes/no]
+* I started the challenge task: no
+* I completed the challenge task: no
 
+## Notes
+
+Not much CSS as it wasn't really specified in the homework documentation
+
+Also, instead of todos, the todo list is in /todo and instead of todos/:id, to get a specific task, it is todo/_id. 
+
+The functionality should be the same though when you press the name of the task of one of the items in the todo list, it will bring you to the page about specific information for that task. 
